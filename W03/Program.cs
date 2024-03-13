@@ -18,13 +18,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
 
 app.UseRouting();
 
 app.UseAuthorization();
 
-SchoolDb.InitializeDb(50);
+SchoolDb.InitializeDb(25);
 
 app.MapControllerRoute(
     name: "default",
