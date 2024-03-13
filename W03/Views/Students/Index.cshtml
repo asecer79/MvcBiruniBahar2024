@@ -24,19 +24,31 @@
         @{
             foreach (var student in students)
             {
-                <tr>
-                    <td>@(student.Id)</td>
-                    <td>@student.Name</td>
-                    <td>@student.Email</td>
-                    <td>@student.Age</td>
-                    <td>
-                        <a asp-controller="Students" asp-action="Edit" asp-route-stundentId="@student.Id" class="btn btn-success btn-sm "> Edit</a>
-                        <a asp-controller="Students" asp-action="DElete" asp-route-stundentId="@student.Id" class="btn btn-danger btn-sm "> Delete</a>
-                    </td>
-                </tr>
+                        <tr>
+                            <td>@(student.Id)</td>
+                            <td>@student.Name</td>
+                            <td>@student.Email</td>
+                            <td>@student.Age</td>
+                            <td>
+                                <a asp-controller="Students" asp-action="Edit" asp-route-studentId="@student.Id" class="btn btn-success btn-sm "> Edit</a>
+                                <a onclick="DeleteConfirm(@(student.Id))" class="btn btn-danger btn-sm "> Delete</a>
+                            </td>
+                        </tr>
             }
         }
     </tbody>
 </table>
 
 
+<script>
+
+    function DeleteConfirm(id) {
+
+        var res = confirm("Are you sure?");
+
+        if (res) {
+
+            window.location = "/Students/Delete?studentId=" + id;
+        }
+    }
+</script>

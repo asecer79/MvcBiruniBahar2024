@@ -7,38 +7,63 @@ namespace W03.Controllers
     {
         public IActionResult Index()
         {
-            var students = SchoolDb.Students;
+            var students = SchoolDb.Students.OrderBy(p=>p.Id).ToList();
             return View(students);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var student = new Student();
+            return View(student);
         }
 
         [HttpPost]
         public IActionResult Create(Student student)
         {
-            return View();
+            var maxId= SchoolDb.Students.Max(p=>p.Id);
+            if (ModelState.IsValid)
+            {
+                student.Id = maxId+1;
+                SchoolDb.Students.Add(student);
+
+               return RedirectToAction("Index");
+            }
+
+            return View(student);
         }
 
         [HttpGet]
         public IActionResult Edit(int studentId)
         {
-            return View();
+            var student = SchoolDb.Students.FirstOrDefault(p => p.Id == studentId);
+            return View(student);
+
         }
 
         [HttpPost]
         public IActionResult Edit(Student student)
         {
-            return View();
+            var studentOld = SchoolDb.Students.FirstOrDefault(p => p.Id == student.Id);
+            SchoolDb.Students.Remove(studentOld);
+
+            if (ModelState.IsValid)
+            {
+                SchoolDb.Students.Add(student);
+
+                return RedirectToAction("Index");
+            }
+
+            return View(student);
+
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult Delete(int studentId)
         {
-            return View();
+            var student = SchoolDb.Students.FirstOrDefault(p => p.Id == studentId);
+            SchoolDb.Students.Remove(student);
+            return RedirectToAction("Index");
         }
     }
 }
