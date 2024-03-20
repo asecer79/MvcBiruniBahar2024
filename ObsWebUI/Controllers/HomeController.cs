@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ObsWebUI.Models;
-using System.Diagnostics;
-using ObsWebUI.Models.Entities;
 using ObsWebUI.Models.Repository;
+using System.Diagnostics;
 
 namespace ObsWebUI.Controllers
 {
@@ -22,8 +21,6 @@ namespace ObsWebUI.Controllers
                 var faculties = db.Faculties.ToList();
 
             }
-
-
 
             return View();
         }
