@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ObsWebUI.Models;
 using System.Diagnostics;
+using ObsWebUI.Models.Entities;
+using ObsWebUI.Models.Repository;
 
 namespace ObsWebUI.Controllers
 {
@@ -15,6 +17,14 @@ namespace ObsWebUI.Controllers
 
         public IActionResult Index()
         {
+            using (var db = new BiruniSchoolDbContext())
+            {
+                var faculties = db.Faculties.ToList();
+
+            }
+
+
+
             return View();
         }
 
