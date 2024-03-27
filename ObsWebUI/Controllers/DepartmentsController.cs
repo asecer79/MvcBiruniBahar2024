@@ -8,7 +8,7 @@ namespace ObsWebUI.Controllers
     public class DepartmentsController : Controller
     {
         private IDepartmentDal _departmentDal;
-        IFacultyDal _faultyDal;
+        private IFacultyDal _faultyDal;
 
         public DepartmentsController(IDepartmentDal departmentDal, IFacultyDal faultyDal)
         {
