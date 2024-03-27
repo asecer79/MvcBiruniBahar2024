@@ -1,7 +1,13 @@
+using DataAccess.ObsDbContext.Ef.Dal.Abstract;
+using DataAccess.ObsDbContext.Ef.Dal.Concrete;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<IDepartmentDal, DepartmentDal>();
+builder.Services.AddSingleton<IFacultyDal, FacultyDal>();
+
 
 var app = builder.Build();
 

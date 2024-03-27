@@ -5,22 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ObsWebUI.Controllers
 {
-    public class FacultiesController : Controller
+    public class DepartmentsController : Controller
     {
-        private IFacultyDal _facultyDal;
+        private IDepartmentDal _departmentDal;
+        IFacultyDal _faultyDal;
 
-        public FacultiesController(IFacultyDal facultyDal)
+        public DepartmentsController(IDepartmentDal departmentDal, IFacultyDal faultyDal)
         {
-            _facultyDal = facultyDal;
+            _departmentDal = departmentDal;
+            _faultyDal = faultyDal;
         }
 
-        // GET: Faculties
+        // GET: Departments
         public async Task<IActionResult> Index()
         {
-            return View(_facultyDal.GetList());
+            return View(_departmentDal.GetList());
         }
 
-        // GET: Faculties/Details/5
+        // GET: Departments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -28,60 +30,66 @@ namespace ObsWebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = _facultyDal.Get(p => p.Id == id);
-            if (faculty == null)
+            var department = _departmentDal.Get(p => p.Id == id);
+            if (department == null)
             {
                 return NotFound();
             }
-            return View(faculty);
+            return View(department);
 
         }
 
-        // GET: Faculties/Create
+        // GET: Departments/Create
         public IActionResult Create()
         {
+            ViewBag.Faculties = _faultyDal.GetList();
             return View();
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,DeanName")] Faculty faculty)
+        public async Task<IActionResult> Create(Department department)
         {
+            ViewBag.Faculties = _faultyDal.GetList();
 
             if (ModelState.IsValid)
             {
-                _facultyDal.Add(faculty);
+                _departmentDal.Add(department);
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(faculty);
+            return View(department);
 
         }
 
-        // GET: Faculties/Edit/5
+        // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.Faculties = _faultyDal.GetList();
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var faculty = _facultyDal.Get(p => p.Id == id);
-            if (faculty == null)
+            var department = _departmentDal.Get(p => p.Id == id);
+            if (department == null)
             {
                 return NotFound();
             }
 
-            return View(faculty);
+            return View(department);
 
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,DeanName")] Faculty faculty)
+        public async Task<IActionResult> Edit(int id, Department department)
         {
-            if (id != faculty.Id)
+            ViewBag.Faculties = _faultyDal.GetList();
+
+            if (id != department.Id)
             {
                 return NotFound();
             }
@@ -90,11 +98,11 @@ namespace ObsWebUI.Controllers
             {
                 try
                 {
-                    _facultyDal.Update(faculty);
+                    _departmentDal.Update(department);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_facultyDal.Any(p=>p.Id==faculty.Id))
+                    if (!_departmentDal.Any(p => p.Id == department.Id))
                     {
                         return NotFound();
                     }
@@ -107,10 +115,10 @@ namespace ObsWebUI.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(faculty);
+            return View(department);
         }
 
-        // GET: Faculties/Delete/5
+        // GET: Departments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -118,29 +126,29 @@ namespace ObsWebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = _facultyDal.Get(p => p.Id == id);
-            if (faculty == null)
+            var department = _departmentDal.Get(p => p.Id == id);
+            if (department == null)
             {
                 return NotFound();
             }
 
-            return View(faculty);
+            return View(department);
         }
 
-        // POST: Faculties/Delete/5
+        // POST: Departments/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var faculty = _facultyDal.Get(p => p.Id == id);
-            if (faculty != null)
+            var department = _departmentDal.Get(p => p.Id == id);
+            if (department != null)
             {
-                _facultyDal.Remove(faculty);
+                _departmentDal.Remove(department);
             }
 
             return RedirectToAction(nameof(Index));
         }
 
-     
+      
     }
 }
