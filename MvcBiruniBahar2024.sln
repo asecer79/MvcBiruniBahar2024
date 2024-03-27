@@ -7,7 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "W01_02", "W01_02\W01_02.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "W03", "W03\W03.csproj", "{431E0920-0D1D-4ABD-B868-E8960D3BA807}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObsWebUI", "ObsWebUI\ObsWebUI.csproj", "{FA24FB32-991A-4FC1-B234-5CAC4039152A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ObsWebUI", "ObsWebUI\ObsWebUI.csproj", "{FA24FB32-991A-4FC1-B234-5CAC4039152A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entities", "Entities\Entities.csproj", "{4DC46B6B-C182-469F-AA25-11E45B45F1EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{C340FFE9-3252-4212-B2ED-45E39990B01B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{FA24FB32-991A-4FC1-B234-5CAC4039152A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA24FB32-991A-4FC1-B234-5CAC4039152A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA24FB32-991A-4FC1-B234-5CAC4039152A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DC46B6B-C182-469F-AA25-11E45B45F1EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DC46B6B-C182-469F-AA25-11E45B45F1EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DC46B6B-C182-469F-AA25-11E45B45F1EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DC46B6B-C182-469F-AA25-11E45B45F1EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C340FFE9-3252-4212-B2ED-45E39990B01B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C340FFE9-3252-4212-B2ED-45E39990B01B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C340FFE9-3252-4212-B2ED-45E39990B01B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C340FFE9-3252-4212-B2ED-45E39990B01B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

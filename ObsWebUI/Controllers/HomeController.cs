@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ObsWebUI.Models;
-using ObsWebUI.Models.Repository;
 using System.Diagnostics;
+using DataAccess.ObsDbContext.Ef.Repository;
 
 namespace ObsWebUI.Controllers
 {

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using DataAccess.ObsDbContext.Ef.Repository;
+using Entities.ObsEntities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ObsWebUI.Models.Entities;
-using ObsWebUI.Models.Repository;
 
 namespace ObsWebUI.Controllers
 {

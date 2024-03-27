@@ -1,4 +1,4 @@
-﻿namespace ObsWebUI.Models.Entities
+﻿namespace Entities.ObsEntities
 {
     public class ExamResult
     {

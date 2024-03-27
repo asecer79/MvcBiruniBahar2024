@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ObsWebUI.Models.Entities;
+﻿using Entities.ObsEntities;
+using Microsoft.EntityFrameworkCore;
 
-namespace ObsWebUI.Models.Repository
+namespace DataAccess.ObsDbContext.Ef.Repository
 {
     public class BiruniSchoolDbContext:DbContext
     {
