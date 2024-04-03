@@ -1,4 +1,4 @@
-﻿using DataAccess.ObsDbContext.Ef.Dal.Abstract;
+﻿using Business.Obs.Abstract;
 using Entities.ObsEntities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,19 +7,19 @@ namespace ObsWebUI.Controllers
 {
     public class DepartmentsController : Controller
     {
-        private IDepartmentDal _departmentDal;
-        private IFacultyDal _faultyDal;
+        private IDepartmentService _departmentService;
+        private IFacultyService _faultyService;
 
-        public DepartmentsController(IDepartmentDal departmentDal, IFacultyDal faultyDal)
+        public DepartmentsController(IDepartmentService departmentService, IFacultyService faultyService)
         {
-            _departmentDal = departmentDal;
-            _faultyDal = faultyDal;
+            _departmentService = departmentService;
+            _faultyService = faultyService;
         }
 
         // GET: Departments
         public async Task<IActionResult> Index()
         {
-            return View(_departmentDal.GetList());
+            return View(_departmentService.GetList());
         }
 
         // GET: Departments/Details/5
@@ -30,7 +30,7 @@ namespace ObsWebUI.Controllers
                 return NotFound();
             }
 
-            var department = _departmentDal.Get(p => p.Id == id);
+            var department = _departmentService.Get(p => p.Id == id);
             if (department == null)
             {
                 return NotFound();
@@ -42,7 +42,7 @@ namespace ObsWebUI.Controllers
         // GET: Departments/Create
         public IActionResult Create()
         {
-            ViewBag.Faculties = _faultyDal.GetList();
+            ViewBag.Faculties = _faultyService.GetList();
             return View();
         }
 
@@ -51,11 +51,11 @@ namespace ObsWebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Department department)
         {
-            ViewBag.Faculties = _faultyDal.GetList();
+            ViewBag.Faculties = _faultyService.GetList();
 
             if (ModelState.IsValid)
             {
-                _departmentDal.Add(department);
+                _departmentService.Add(department);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -66,14 +66,14 @@ namespace ObsWebUI.Controllers
         // GET: Departments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            ViewBag.Faculties = _faultyDal.GetList();
+            ViewBag.Faculties = _faultyService.GetList();
 
             if (id == null)
             {
                 return NotFound();
             }
 
-            var department = _departmentDal.Get(p => p.Id == id);
+            var department = _departmentService.Get(p => p.Id == id);
             if (department == null)
             {
                 return NotFound();
@@ -87,7 +87,7 @@ namespace ObsWebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Department department)
         {
-            ViewBag.Faculties = _faultyDal.GetList();
+            ViewBag.Faculties = _faultyService.GetList();
 
             if (id != department.Id)
             {
@@ -98,11 +98,11 @@ namespace ObsWebUI.Controllers
             {
                 try
                 {
-                    _departmentDal.Update(department);
+                    _departmentService.Update(department);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_departmentDal.Any(p => p.Id == department.Id))
+                    if (!_departmentService.Any(p => p.Id == department.Id))
                     {
                         return NotFound();
                     }
@@ -126,7 +126,7 @@ namespace ObsWebUI.Controllers
                 return NotFound();
             }
 
-            var department = _departmentDal.Get(p => p.Id == id);
+            var department = _departmentService.Get(p => p.Id == id);
             if (department == null)
             {
                 return NotFound();
@@ -140,10 +140,10 @@ namespace ObsWebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var department = _departmentDal.Get(p => p.Id == id);
+            var department = _departmentService.Get(p => p.Id == id);
             if (department != null)
             {
-                _departmentDal.Remove(department);
+                _departmentService.Remove(department);
             }
 
             return RedirectToAction(nameof(Index));

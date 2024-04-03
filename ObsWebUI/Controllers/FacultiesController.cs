@@ -1,4 +1,4 @@
-﻿using DataAccess.ObsDbContext.Ef.Dal.Abstract;
+﻿using Business.Obs.Abstract;
 using Entities.ObsEntities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,17 +7,17 @@ namespace ObsWebUI.Controllers
 {
     public class FacultiesController : Controller
     {
-        private IFacultyDal _facultyDal;
+        private IFacultyService _facultyService;
 
-        public FacultiesController(IFacultyDal facultyDal)
+        public FacultiesController(IFacultyService facultyService)
         {
-            _facultyDal = facultyDal;
+            _facultyService = facultyService;
         }
 
         // GET: Faculties
         public async Task<IActionResult> Index()
         {
-            return View(_facultyDal.GetList());
+            return View(_facultyService.GetList(p=>p.Name.Contains("x")));
         }
 
         // GET: Faculties/Details/5
@@ -28,7 +28,7 @@ namespace ObsWebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = _facultyDal.Get(p => p.Id == id);
+            var faculty = _facultyService.Get(p => p.Id == id);
             if (faculty == null)
             {
                 return NotFound();
@@ -51,7 +51,7 @@ namespace ObsWebUI.Controllers
 
             if (ModelState.IsValid)
             {
-                _facultyDal.Add(faculty);
+                _facultyService.Add(faculty);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -67,7 +67,7 @@ namespace ObsWebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = _facultyDal.Get(p => p.Id == id);
+            var faculty = _facultyService.Get(p => p.Id == id);
             if (faculty == null)
             {
                 return NotFound();
@@ -90,11 +90,11 @@ namespace ObsWebUI.Controllers
             {
                 try
                 {
-                    _facultyDal.Update(faculty);
+                    _facultyService.Update(faculty);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!_facultyDal.Any(p=>p.Id==faculty.Id))
+                    if (!_facultyService.Any(p=>p.Id==faculty.Id))
                     {
                         return NotFound();
                     }
@@ -118,7 +118,7 @@ namespace ObsWebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = _facultyDal.Get(p => p.Id == id);
+            var faculty = _facultyService.Get(p => p.Id == id);
             if (faculty == null)
             {
                 return NotFound();
@@ -132,10 +132,10 @@ namespace ObsWebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var faculty = _facultyDal.Get(p => p.Id == id);
+            var faculty = _facultyService.Get(p => p.Id == id);
             if (faculty != null)
             {
-                _facultyDal.Remove(faculty);
+                _facultyService.Remove(faculty);
             }
 
             return RedirectToAction(nameof(Index));
