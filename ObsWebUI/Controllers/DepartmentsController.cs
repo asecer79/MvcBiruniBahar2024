@@ -25,6 +25,9 @@ namespace ObsWebUI.Controllers
         // GET: Departments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            throw new Exception("Merhaba bu bir hata");
+
+
             if (id == null)
             {
                 return NotFound();
