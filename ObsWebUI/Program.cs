@@ -62,10 +62,28 @@ if (!app.Environment.IsDevelopment())
 
 //app.UseMiddleware<IpLoggerMiddleware>();
 
+
 app.UseMiddleware<AccessLoggerMiddleware>();
+
 
 app.UseMiddleware<ErrorLoggerMiddleware>();
 
+app.UseMiddleware<PerformanceLoggerMiddleware>();
+
+//app.UseWhen(context => context.Request.Method.Equals("POST"), appBuilder =>
+//{
+//    app.UseMiddleware<ErrorLoggerMiddleware>();
+//});
+
+//app.MapWhen(context => context.Request.Method.Equals("POST"), appBuilder =>
+//{
+//    app.UseMiddleware<ErrorLoggerMiddleware>();
+//});
+
+//app.Map("/Faculties", appBuilder =>
+//{
+//    app.UseMiddleware<ErrorLoggerMiddleware>();
+//});
 
 app.UseHttpsRedirection();
 
