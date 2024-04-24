@@ -12,8 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddMemoryCache();
 
-
-
 builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<IDepartmentDal, DepartmentDal>();
 builder.Services.AddSingleton<IFacultyDal, FacultyDal>();
@@ -62,9 +60,7 @@ if (!app.Environment.IsDevelopment())
 
 //app.UseMiddleware<IpLoggerMiddleware>();
 
-
 app.UseMiddleware<AccessLoggerMiddleware>();
-
 
 app.UseMiddleware<ErrorLoggerMiddleware>();
 
