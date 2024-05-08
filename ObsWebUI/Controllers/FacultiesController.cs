@@ -1,10 +1,12 @@
-﻿using Business.Obs.Abstract;
+﻿using Business.Services.Obs.Abstract;
 using Entities.ObsEntities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ObsWebUI.Controllers
 {
+    [Authorize]
     public class FacultiesController : Controller
     {
         private IFacultyService _facultyService;

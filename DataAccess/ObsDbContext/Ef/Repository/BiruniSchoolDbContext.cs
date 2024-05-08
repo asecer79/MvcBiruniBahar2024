@@ -1,4 +1,5 @@
-﻿using Entities.ObsEntities;
+﻿using Entities.CommonEntities;
+using Entities.ObsEntities;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.ObsDbContext.Ef.Repository
@@ -21,6 +22,10 @@ namespace DataAccess.ObsDbContext.Ef.Repository
         public DbSet<ExamResult>? ExamResults { get; set; }
         public DbSet<StudentCourse>? StudentCourses { get; set; }
         public DbSet<InstructorCourse>? InstructorCourse { get; set; }
+
+        public DbSet<User>? Users { get; set; }
+        public DbSet<OperationClaim>? OperationClaims { get; set; }
+        public DbSet<UserOperationClaim>? UserOperationClaims { get; set; }
 
     }
 }

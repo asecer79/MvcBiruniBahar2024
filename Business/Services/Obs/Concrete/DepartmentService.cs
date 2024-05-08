@@ -1,11 +1,11 @@
-﻿using Business.Obs.Abstract;
+﻿using Business.Services.Obs.Abstract;
 using DataAccess.ObsDbContext.Ef.Dal.Abstract;
 using Entities.ObsEntities;
 using System.Linq.Expressions;
 
-namespace Business.Obs.Concrete
+namespace Business.Services.Obs.Concrete
 {
-    public class DepartmentService:IDepartmentService
+    public class DepartmentService : IDepartmentService
     {
         private IDepartmentDal _facultyDal;
 

@@ -1,12 +1,12 @@
-﻿using Business.Obs.Abstract;
-using DataAccess.ObsDbContext.Ef.Dal.Abstract;
+﻿using DataAccess.ObsDbContext.Ef.Dal.Abstract;
 using Entities.ObsEntities;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 using Caching.Abstract;
+using Business.Services.Obs.Abstract;
 
-namespace Business.Obs.Concrete
+namespace Business.Services.Obs.Concrete
 {
     public class FacultyService : IFacultyService
     {
@@ -37,9 +37,9 @@ namespace Business.Obs.Concrete
 
             var param = filter == null ? "" : filter.ToString();
 
-            var key = $"IFacultyService.GetList{param}" ;
-            
-            using (var sha256 =SHA256.Create())
+            var key = $"IFacultyService.GetList{param}";
+
+            using (var sha256 = SHA256.Create())
             {
                 var hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(key));
                 var hashString = BitConverter.ToString(hashBytes).Replace("-", "");
@@ -52,7 +52,7 @@ namespace Business.Obs.Concrete
             {
                 //Thread.Sleep(10000);
                 var freshData = _facultyDal.GetList(filter);
-                _cacheProvider.Set<List<Faculty>>(key, freshData, TimeSpan.FromSeconds(600));
+                _cacheProvider.Set(key, freshData, TimeSpan.FromSeconds(600));
 
                 return freshData;
             }
