@@ -1,6 +1,8 @@
-using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Autofac;
 using Business.AuthorizationServices;
+using Business.AuthorizationServices.Abstract;
+using Business.AuthorizationServices.Concrete;
 using Business.DependencyResolvers.ObsDependencyResolver;
 using Caching.Abstract;
 using Caching.Concrete;
@@ -9,16 +11,9 @@ using ObsWebUI.MyMiddlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
-
-
-
-//builder.Services.AddSingleton<ICacheProvider, MemoryCacheProvider>();
-builder.Services.AddSingleton<ICacheProvider, RedisCacheProvider>();
-
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
@@ -28,8 +23,8 @@ builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
 
 
 
-var cookieOptions = builder.Configuration.GetSection("CookieAuthOption").Get<CookieAuthOption>();
 
+var cookieOptions = builder.Configuration.GetSection("CookieAuthOption").Get<CookieAuthOption>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
@@ -41,7 +36,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     options.ExpireTimeSpan = TimeSpan.FromSeconds(cookieOptions.TimeOut);
 });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -51,8 +45,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-
 
 
 //inline middleware

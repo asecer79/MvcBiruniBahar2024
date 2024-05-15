@@ -1,25 +1,26 @@
-﻿using Business.Services.Obs.Abstract;
-using Entities.ObsEntities;
+﻿using Entities.ObsEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ObsWebUI.Controllers
 {
     [Authorize]
-    public class FacultiesController : Controller
+    public class FacultiesController(HttpClient client) : Controller
     {
-        private IFacultyService _facultyService;
+        private HttpClient _client = client;
+        private const string baseUrl = "https://localhost:7175/ObsApi";
 
-        public FacultiesController(IFacultyService facultyService)
-        {
-            _facultyService = facultyService;
-        }
 
         // GET: Faculties
         public async Task<IActionResult> Index()
         {
-            return View(_facultyService.GetList(p=>p.Name.Contains("x")));
+            var controller = "faculties";
+            var action = "getList";
+            var fullAddress = $"{baseUrl}/{controller}/{action}";
+
+            var response = await _client.GetFromJsonAsync<IEnumerable<Faculty>>(fullAddress);
+
+            return View(response);
         }
 
         // GET: Faculties/Details/5
@@ -30,7 +31,14 @@ namespace ObsWebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = _facultyService.Get(p => p.Id == id);
+            var controller = "faculties";
+            var action = "get";
+            var fullAddress = $"{baseUrl}/{controller}/{action}?id={id}";
+
+            var response = await _client.GetFromJsonAsync<Faculty>(fullAddress);
+
+            var faculty = response;
+
             if (faculty == null)
             {
                 return NotFound();
@@ -53,7 +61,12 @@ namespace ObsWebUI.Controllers
 
             if (ModelState.IsValid)
             {
-                _facultyService.Add(faculty);
+                var controller = "faculties";
+                var action = "create";
+                var fullAddress = $"{baseUrl}/{controller}/{action}";
+
+                var response = await _client.PostAsJsonAsync(fullAddress,faculty);
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -69,7 +82,14 @@ namespace ObsWebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = _facultyService.Get(p => p.Id == id);
+            var controller = "faculties";
+            var action = "get";
+            var fullAddress = $"{baseUrl}/{controller}/{action}?id={id}";
+
+            var response = await _client.GetFromJsonAsync<Faculty>(fullAddress);
+
+            var faculty = response;
+
             if (faculty == null)
             {
                 return NotFound();
@@ -92,18 +112,16 @@ namespace ObsWebUI.Controllers
             {
                 try
                 {
-                    _facultyService.Update(faculty);
+
+                    var controller = "faculties";
+                    var action = "Edit";
+                    var fullAddress = $"{baseUrl}/{controller}/{action}";
+
+                    var response = await _client.PostAsJsonAsync(fullAddress, faculty);
                 }
                 catch (Exception ex)
                 {
-                    if (!_facultyService.Any(p=>p.Id==faculty.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                   
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -120,11 +138,14 @@ namespace ObsWebUI.Controllers
                 return NotFound();
             }
 
-            var faculty = _facultyService.Get(p => p.Id == id);
-            if (faculty == null)
-            {
-                return NotFound();
-            }
+
+            var controller = "faculties";
+            var action = "get";
+            var fullAddress = $"{baseUrl}/{controller}/{action}?id={id}";
+
+            var response = await _client.GetFromJsonAsync<Faculty>(fullAddress);
+
+            var faculty = response;
 
             return View(faculty);
         }
@@ -134,15 +155,23 @@ namespace ObsWebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var faculty = _facultyService.Get(p => p.Id == id);
-            if (faculty != null)
-            {
-                _facultyService.Remove(faculty);
-            }
+            var controller1 = "faculties";
+            var action1 = "get";
+            var fullAddress1 = $"{baseUrl}/{controller1}/{action1}?id={id}";
+
+            var response1 = await _client.GetFromJsonAsync<Faculty>(fullAddress1);
+
+            var faculty1 = response1;
+
+            var controller = "faculties";
+            var action = "delete";
+            var fullAddress = $"{baseUrl}/{controller}/{action}";
+
+            var response = await _client.PostAsJsonAsync(fullAddress, faculty1);
 
             return RedirectToAction(nameof(Index));
         }
 
-     
+
     }
 }

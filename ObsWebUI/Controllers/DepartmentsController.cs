@@ -1,159 +1,159 @@
-﻿using Business.Services.Obs.Abstract;
-using Entities.ObsEntities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿//using Business.Services.Obs.Abstract;
+//using Entities.ObsEntities;
+//using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.EntityFrameworkCore;
 
-namespace ObsWebUI.Controllers
-{
-    [Authorize(Roles = "admin,manager,user")]
-    public class DepartmentsController : Controller
-    {
-        private IDepartmentService _departmentService;
-        private IFacultyService _faultyService;
+//namespace ObsWebUI.Controllers
+//{
+//    [Authorize(Roles = "admin,manager,user")]
+//    public class DepartmentsController : Controller
+//    {
+//        private IDepartmentService _departmentService;
+//        private IFacultyService _faultyService;
 
-        public DepartmentsController(IDepartmentService departmentService, IFacultyService faultyService)
-        {
-            _departmentService = departmentService;
-            _faultyService = faultyService;
-        }
+//        public DepartmentsController(IDepartmentService departmentService, IFacultyService faultyService)
+//        {
+//            _departmentService = departmentService;
+//            _faultyService = faultyService;
+//        }
 
-        // GET: Departments
-        public async Task<IActionResult> Index()
-        {
-            return View(_departmentService.GetList());
-        }
+//        // GET: Departments
+//        public async Task<IActionResult> Index()
+//        {
+//            return View(_departmentService.GetList());
+//        }
 
-        // GET: Departments/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            throw new Exception("Merhaba bu bir hata");
-
-
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var department = _departmentService.Get(p => p.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-            return View(department);
-
-        }
-
-        // GET: Departments/Create
-        public IActionResult Create()
-        {
-            ViewBag.Faculties = _faultyService.GetList();
-            return View();
-        }
+//        // GET: Departments/Details/5
+//        public async Task<IActionResult> Details(int? id)
+//        {
+//            throw new Exception("Merhaba bu bir hata");
 
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Department department)
-        {
-            ViewBag.Faculties = _faultyService.GetList();
+//            if (id == null)
+//            {
+//                return NotFound();
+//            }
 
-            if (ModelState.IsValid)
-            {
-                _departmentService.Add(department);
-                return RedirectToAction(nameof(Index));
-            }
+//            var department = _departmentService.Get(p => p.Id == id);
+//            if (department == null)
+//            {
+//                return NotFound();
+//            }
+//            return View(department);
 
-            return View(department);
+//        }
 
-        }
+//        // GET: Departments/Create
+//        public IActionResult Create()
+//        {
+//            ViewBag.Faculties = _faultyService.GetList();
+//            return View();
+//        }
 
-        // GET: Departments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            ViewBag.Faculties = _faultyService.GetList();
 
-            if (id == null)
-            {
-                return NotFound();
-            }
+//        [HttpPost]
+//        [ValidateAntiForgeryToken]
+//        public async Task<IActionResult> Create(Department department)
+//        {
+//            ViewBag.Faculties = _faultyService.GetList();
 
-            var department = _departmentService.Get(p => p.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
+//            if (ModelState.IsValid)
+//            {
+//                _departmentService.Add(department);
+//                return RedirectToAction(nameof(Index));
+//            }
 
-            return View(department);
+//            return View(department);
 
-        }
+//        }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Department department)
-        {
-            ViewBag.Faculties = _faultyService.GetList();
+//        // GET: Departments/Edit/5
+//        public async Task<IActionResult> Edit(int? id)
+//        {
+//            ViewBag.Faculties = _faultyService.GetList();
 
-            if (id != department.Id)
-            {
-                return NotFound();
-            }
+//            if (id == null)
+//            {
+//                return NotFound();
+//            }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _departmentService.Update(department);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_departmentService.Any(p => p.Id == department.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+//            var department = _departmentService.Get(p => p.Id == id);
+//            if (department == null)
+//            {
+//                return NotFound();
+//            }
 
-                return RedirectToAction(nameof(Index));
-            }
+//            return View(department);
 
-            return View(department);
-        }
+//        }
 
-        // GET: Departments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+//        [HttpPost]
+//        [ValidateAntiForgeryToken]
+//        public async Task<IActionResult> Edit(int id, Department department)
+//        {
+//            ViewBag.Faculties = _faultyService.GetList();
 
-            var department = _departmentService.Get(p => p.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
+//            if (id != department.Id)
+//            {
+//                return NotFound();
+//            }
 
-            return View(department);
-        }
+//            if (ModelState.IsValid)
+//            {
+//                try
+//                {
+//                    _departmentService.Update(department);
+//                }
+//                catch (DbUpdateConcurrencyException)
+//                {
+//                    if (!_departmentService.Any(p => p.Id == department.Id))
+//                    {
+//                        return NotFound();
+//                    }
+//                    else
+//                    {
+//                        throw;
+//                    }
+//                }
 
-        // POST: Departments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var department = _departmentService.Get(p => p.Id == id);
-            if (department != null)
-            {
-                _departmentService.Remove(department);
-            }
+//                return RedirectToAction(nameof(Index));
+//            }
 
-            return RedirectToAction(nameof(Index));
-        }
+//            return View(department);
+//        }
+
+//        // GET: Departments/Delete/5
+//        public async Task<IActionResult> Delete(int? id)
+//        {
+//            if (id == null)
+//            {
+//                return NotFound();
+//            }
+
+//            var department = _departmentService.Get(p => p.Id == id);
+//            if (department == null)
+//            {
+//                return NotFound();
+//            }
+
+//            return View(department);
+//        }
+
+//        // POST: Departments/Delete/5
+//        [HttpPost, ActionName("Delete")]
+//        [ValidateAntiForgeryToken]
+//        public async Task<IActionResult> DeleteConfirmed(int id)
+//        {
+//            var department = _departmentService.Get(p => p.Id == id);
+//            if (department != null)
+//            {
+//                _departmentService.Remove(department);
+//            }
+
+//            return RedirectToAction(nameof(Index));
+//        }
 
       
-    }
-}
+//    }
+//}
