@@ -1,5 +1,6 @@
 ﻿using Business.AuthorizationServices.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace ObsWebUI.Controllers
 {
@@ -32,15 +33,16 @@ namespace ObsWebUI.Controllers
         }
 
         [HttpGet]
-        public IActionResult LogOut()
+        public async Task<IActionResult> LogOut()
         {
-            //
+             await _authService.SignOutAsync();
+
             return RedirectToAction("Login");
 
         }
 
         [HttpGet]
-        public IActionResult AccessDeniedPath()
+        public IActionResult AccessDenied()
         {
             return View();
         }

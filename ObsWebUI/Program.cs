@@ -1,13 +1,9 @@
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Business.AuthorizationServices;
-using Business.AuthorizationServices.Abstract;
-using Business.AuthorizationServices.Concrete;
-using Business.CommonServices.ICommonUserInterfaces;
-using Business.Services.Obs.Abstract;
-using Business.Services.Obs.Concrete;
+using Business.DependencyResolvers.ObsDependencyResolver;
 using Caching.Abstract;
 using Caching.Concrete;
-using DataAccess.ObsDbContext.Ef.Dal.Abstract;
-using DataAccess.ObsDbContext.Ef.Dal.Concrete;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ObsWebUI.MyMiddlewares;
 
@@ -17,21 +13,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<IDepartmentDal, DepartmentDal>();
-builder.Services.AddSingleton<IFacultyDal, FacultyDal>();
-builder.Services.AddSingleton<IDepartmentService, DepartmentService>();
-builder.Services.AddSingleton<IFacultyService, FacultyService>();
 
-builder.Services.AddSingleton<IUserService, UserService>();
-builder.Services.AddSingleton<IUserDal, UserDal>();
-builder.Services.AddSingleton<IOperationClaimDal, OperationClaimDal>();
-builder.Services.AddSingleton<IOperationClaimService, OperationClaimService>();
-builder.Services.AddSingleton<IUserOperationClaimDal, UserOperationClaimDal>();
-builder.Services.AddSingleton<IUserOperationClaimService, UserOperationClaimService>();
-builder.Services.AddSingleton<IAuthService, AuthService>();
+
 
 //builder.Services.AddSingleton<ICacheProvider, MemoryCacheProvider>();
 builder.Services.AddSingleton<ICacheProvider, RedisCacheProvider>();
+
+
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+{
+    containerBuilder.RegisterModule(new ObsDependencyResolver());
+});
+
 
 
 var cookieOptions = builder.Configuration.GetSection("CookieAuthOption").Get<CookieAuthOption>();
