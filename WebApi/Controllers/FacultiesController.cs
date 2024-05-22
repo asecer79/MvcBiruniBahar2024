@@ -1,6 +1,8 @@
 ﻿using Business.Services.Obs.Abstract;
 using Entities.ObsEntities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace WebApi.Controllers
 {
@@ -24,15 +26,19 @@ namespace WebApi.Controllers
             return Task.FromResult<IActionResult>(response);
         }
 
+
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetList")]
         public Task<IActionResult> GetList()
         {
             var result = _facultyService.GetList();
+
             var response = Ok(result);
 
             return Task.FromResult<IActionResult>(response);
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost("Create")]
         public Task<IActionResult> Create(Faculty entity)
         {
@@ -42,6 +48,7 @@ namespace WebApi.Controllers
             return Task.FromResult<IActionResult>(response);
         }
 
+        [Authorize(Roles = "user")]
         [HttpPost("Edit")]
         public Task<IActionResult> Edit(Faculty entity)
         {

@@ -17,13 +17,14 @@ namespace WebApi.Controllers
     {
 
         [HttpPost("Login")]
-        public ActionResult Login(string email, string password)
+        public ActionResult Login([FromBody] UserInfo user)
         {
-            var result = userService.GetUserByEmailAndPassword(email, password);
+            var result = userService.GetUserByEmailAndPassword(user.Email, user.Password);
 
-            if (result!=null)
+            if (result != null)
             {
-                var token = GetJwtToken(email, password);
+                var token = GetJwtToken(user.Email, user.Password);
+
                 return Ok(token);
             }
 
@@ -33,7 +34,6 @@ namespace WebApi.Controllers
 
         private string GetJwtToken(string email, string password)
         {
-
             var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Jwt:Key"]));
 
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -41,8 +41,8 @@ namespace WebApi.Controllers
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub,email),
-                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
 
+                new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
             };
 
             var user = userService.GetUserByEmailAndPassword(email, password);
@@ -64,7 +64,13 @@ namespace WebApi.Controllers
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-
         }
+    }
+
+
+    public class UserInfo
+    {
+        public string Email { get; set; }
+        public string Password { get; set; }
     }
 }

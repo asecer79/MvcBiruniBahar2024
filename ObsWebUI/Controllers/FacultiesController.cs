@@ -1,4 +1,5 @@
-﻿using Entities.ObsEntities;
+﻿using System.Net.Http.Headers;
+using Entities.ObsEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,9 +15,14 @@ namespace ObsWebUI.Controllers
         // GET: Faculties
         public async Task<IActionResult> Index()
         {
+            var token = HttpContext.Session.GetString("token");
+
+
             var controller = "faculties";
             var action = "getList";
             var fullAddress = $"{baseUrl}/{controller}/{action}";
+
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await _client.GetFromJsonAsync<IEnumerable<Faculty>>(fullAddress);
 

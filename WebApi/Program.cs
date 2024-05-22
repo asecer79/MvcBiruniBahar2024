@@ -50,8 +50,9 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("Admin",policy=>policy.RequireRole("Admin"));
+    options.AddPolicy("Admin", policy=>policy.RequireRole("Admin"));
     options.AddPolicy("User", policy => policy.RequireRole("User"));
+    options.AddPolicy("Manager", policy => policy.RequireRole("Manager"));
 });
 
 
