@@ -55,7 +55,7 @@ namespace WebApi.Controllers
             }
 
             var token = new JwtSecurityToken(
-                issuer: configuration["Jwt:Audience"],
+                issuer: configuration["Jwt:Issuer"],
                 audience: configuration["Jwt:Audience"],
                 claims:claims,
                 expires:DateTime.Now.AddMinutes(Convert.ToDouble(configuration["Jwt:Expires"])),

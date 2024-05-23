@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 namespace WebApi.Controllers
 {
     [ApiController]
-    [Route("ObsApi/[controller]")]
+    [Route("api/[controller]")]
     public class FacultiesController : ControllerBase
     {
         private IFacultyService _facultyService;
@@ -28,7 +28,7 @@ namespace WebApi.Controllers
 
 
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "user")]
         [HttpGet("GetList")]
         public Task<IActionResult> GetList()
         {
@@ -38,6 +38,7 @@ namespace WebApi.Controllers
 
             return Task.FromResult<IActionResult>(response);
         }
+
         [Authorize(Roles = "admin")]
         [HttpPost("Create")]
         public Task<IActionResult> Create(Faculty entity)

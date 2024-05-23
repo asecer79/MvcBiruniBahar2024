@@ -78,8 +78,10 @@ namespace DataAccess.ObsDbContext.Ef.Dal.Concrete
         {
             using (var context = new BiruniSchoolDbContext())
             {
-                return context.UserOperationClaims.Where(p => p.UserId == userId).Select(p => p.OperationClaim)
+                var data = context.UserOperationClaims.Where(p => p.UserId == userId).Select(p => p.OperationClaim)
                     .ToList();
+
+                return data;
             }
         }
     }

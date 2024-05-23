@@ -1,7 +1,9 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net;
+using System.Net.Http.Headers;
 using Entities.ObsEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ObsWebUI.Models;
 
 namespace ObsWebUI.Controllers
 {
@@ -9,19 +11,20 @@ namespace ObsWebUI.Controllers
     public class FacultiesController(HttpClient client) : Controller
     {
         private HttpClient _client = client;
-        private const string baseUrl = "https://localhost:7175/ObsApi";
+        private string baseUrl = BaseParams.ApiBaseUrl;
 
 
         // GET: Faculties
         public async Task<IActionResult> Index()
         {
-            var token = HttpContext.Session.GetString("token");
+           
 
 
             var controller = "faculties";
             var action = "getList";
             var fullAddress = $"{baseUrl}/{controller}/{action}";
 
+            var token = HttpContext.Session.GetString("token");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
             var response = await _client.GetFromJsonAsync<IEnumerable<Faculty>>(fullAddress);
@@ -41,6 +44,8 @@ namespace ObsWebUI.Controllers
             var action = "get";
             var fullAddress = $"{baseUrl}/{controller}/{action}?id={id}";
 
+            var token = HttpContext.Session.GetString("token");
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.GetFromJsonAsync<Faculty>(fullAddress);
 
             var faculty = response;
@@ -71,9 +76,18 @@ namespace ObsWebUI.Controllers
                 var action = "create";
                 var fullAddress = $"{baseUrl}/{controller}/{action}";
 
+                var token = HttpContext.Session.GetString("token");
+                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 var response = await _client.PostAsJsonAsync(fullAddress,faculty);
-
-                return RedirectToAction(nameof(Index));
+                if (response.StatusCode==HttpStatusCode.OK)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return Content("Unauthorized");
+                }
+              
             }
 
             return View(faculty);

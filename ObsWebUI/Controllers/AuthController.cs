@@ -2,6 +2,7 @@
 using Business.AuthorizationServices.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using ObsWebUI.Models;
 
 namespace ObsWebUI.Controllers
 {
@@ -20,7 +21,7 @@ namespace ObsWebUI.Controllers
 
             if (isAuth)
             {
-                var url = "https://localhost:7175/api/Auth/Login";
+                var url = $"{BaseParams.ApiBaseUrl}/Auth/Login";
 
                 var userInfo = new { email = email, password = password };
 
