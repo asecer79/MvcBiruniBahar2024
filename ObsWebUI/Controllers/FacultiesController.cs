@@ -17,9 +17,6 @@ namespace ObsWebUI.Controllers
         // GET: Faculties
         public async Task<IActionResult> Index()
         {
-           
-
-
             var controller = "faculties";
             var action = "getList";
             var fullAddress = $"{baseUrl}/{controller}/{action}";
