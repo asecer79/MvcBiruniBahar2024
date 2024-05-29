@@ -1,42 +1,35 @@
-using Autofac.Extensions.DependencyInjection;
-using Autofac;
 using Business.AuthorizationServices;
-using Business.AuthorizationServices.Abstract;
-using Business.AuthorizationServices.Concrete;
-using Business.DependencyResolvers.ObsDependencyResolver;
-using Caching.Abstract;
-using Caching.Concrete;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ObsWebUI.MyMiddlewares;
+using ObsWebUI.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHttpClient();
-builder.Services.AddHttpContextAccessor();
+
+
+// Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddMemoryCache();
+
 builder.Services.AddHttpClient();
 builder.Services.AddSession();
 
-builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
-{
-    containerBuilder.RegisterModule(new ObsDependencyResolver());
-});
-
-
-
-
-var cookieOptions = builder.Configuration.GetSection("CookieAuthOption").Get<CookieAuthOption>();
+var cookieOptions = builder.Configuration.GetSection("CookieOptions").Get<CookieAuthOptions>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
-    options.AccessDeniedPath = cookieOptions.AccessDeniedPath;
-    options.Cookie.Name = cookieOptions.Name;
+    options.Cookie.Name = cookieOptions!.Name;
     options.LoginPath = cookieOptions.LoginPath;
-    options.LogoutPath = cookieOptions.LogOutPath;
+    options.LogoutPath = cookieOptions.LogoutPath;
+    options.AccessDeniedPath = cookieOptions.AccessDeniedPath;
     options.SlidingExpiration = cookieOptions.SlidingExpiration;
     options.ExpireTimeSpan = TimeSpan.FromSeconds(cookieOptions.TimeOut);
-});
+}
+);
+
 
 var app = builder.Build();
 
@@ -48,37 +41,58 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseHttpsRedirection();
 
-//inline middleware
+app.UseStaticFiles();
+
+app.UseCookiePolicy();
+
+app.UseRouting();
+
+
+
+
+//basic simple middleware
+//app.Run(async (context) =>
+//{
+//    //context.Response.Redirect($"/Auth/Login/");
+
+//    Debug.WriteLine(context.Request.HttpContext.User.Identity.IsAuthenticated); //security
+//    Debug.WriteLine(context.Request.Host.Value);//ip address 
+//    Debug.WriteLine(context.Request.Path);//ip address 
+
+
+//});
+
+//app.Run(async (context) => Mid1.MyMiddleware1(context));
+
 
 //app.Use(async (context, next) =>
 //{
-//    Debug.Write("Request Process 1\n");
-//    //request
-//    await next();
-//    //response
-//    Debug.Write("Response Process 1\n");
+//    Debug.WriteLine("M1-Request:"+context.Request.Path); 
+//    next();
+//    Debug.WriteLine("M1-Response:" + context.Response.StatusCode);
 //});
-
 //app.Use(async (context, next) =>
 //{
-//    Debug.Write("Request Process 2\n");
-//    //request
-//    await next();
-//    //response
-//    Debug.Write("Response Process 2\n");
+//    Debug.WriteLine("M2-Request:" + context.Request.Path);
+//    next();
+//    Debug.WriteLine("M2-Response:" + context.Response.StatusCode);
 //});
-
 //app.Use(async (context, next) =>
 //{
-//    Debug.Write("Request Process 3\n");
-//    //request
-//    await next();
-//    //response
-//    Debug.Write("Response Process 3\n");
+//    Debug.WriteLine("M3-Request:" + context.Request.Path);
+//    next();
+//    Debug.WriteLine("M3-Response:" + context.Response.StatusCode);
+//});
+//app.Use(async (context, next) =>
+//{
+//    Debug.WriteLine("M4-Request:" + context.Request.Path);
+//    next();
+//    Debug.WriteLine("M4-Response:" + context.Response.StatusCode);
 //});
 
-//app.UseMiddleware<IpLoggerMiddleware>();
+app.UseMiddleware<IpLoggerMiddleware>();
 
 app.UseMiddleware<AccessLoggerMiddleware>();
 
@@ -86,26 +100,6 @@ app.UseMiddleware<ErrorLoggerMiddleware>();
 
 app.UseMiddleware<PerformanceLoggerMiddleware>();
 
-//app.UseWhen(context => context.Request.Method.Equals("POST"), appBuilder =>
-//{
-//    app.UseMiddleware<ErrorLoggerMiddleware>();
-//});
-
-//app.MapWhen(context => context.Request.Method.Equals("POST"), appBuilder =>
-//{
-//    app.UseMiddleware<ErrorLoggerMiddleware>();
-//});
-
-//app.Map("/Faculties", appBuilder =>
-//{
-//    app.UseMiddleware<ErrorLoggerMiddleware>();
-//});
-
-app.UseHttpsRedirection();
-
-app.UseStaticFiles();
-
-app.UseRouting();
 
 app.UseSession();
 
@@ -113,14 +107,9 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
-
-
-
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
 
 
 

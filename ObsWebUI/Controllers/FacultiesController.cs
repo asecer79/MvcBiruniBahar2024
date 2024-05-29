@@ -1,18 +1,16 @@
-﻿using System.Net;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using Entities.ObsEntities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ObsWebUI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ObsWebUI.Controllers
 {
-    [Authorize]
+    [Authorize]   //controller level
     public class FacultiesController(HttpClient client) : Controller
     {
         private HttpClient _client = client;
-        private string baseUrl = BaseParams.ApiBaseUrl;
-
+        private const string baseUrl = "https://localhost:44364/ObsApi";
 
         // GET: Faculties
         public async Task<IActionResult> Index()
@@ -23,6 +21,7 @@ namespace ObsWebUI.Controllers
 
             var token = HttpContext.Session.GetString("token");
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
 
             var response = await _client.GetFromJsonAsync<IEnumerable<Faculty>>(fullAddress);
 
@@ -41,8 +40,6 @@ namespace ObsWebUI.Controllers
             var action = "get";
             var fullAddress = $"{baseUrl}/{controller}/{action}?id={id}";
 
-            var token = HttpContext.Session.GetString("token");
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _client.GetFromJsonAsync<Faculty>(fullAddress);
 
             var faculty = response;
@@ -56,11 +53,12 @@ namespace ObsWebUI.Controllers
         }
 
         // GET: Faculties/Create
+
+        [Authorize] // action
         public IActionResult Create()
         {
             return View();
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -73,31 +71,19 @@ namespace ObsWebUI.Controllers
                 var action = "create";
                 var fullAddress = $"{baseUrl}/{controller}/{action}";
 
-                var token = HttpContext.Session.GetString("token");
-                _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var response = await _client.PostAsJsonAsync(fullAddress,faculty);
-                if (response.StatusCode==HttpStatusCode.OK)
-                {
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    return Content("Unauthorized");
-                }
-              
+                var response = await _client.PostAsJsonAsync(fullAddress, faculty);
+
+                return RedirectToAction(nameof(Index));
             }
 
             return View(faculty);
 
         }
 
-        // GET: Faculties/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+
 
             var controller = "faculties";
             var action = "get";
@@ -107,13 +93,7 @@ namespace ObsWebUI.Controllers
 
             var faculty = response;
 
-            if (faculty == null)
-            {
-                return NotFound();
-            }
-
             return View(faculty);
-
         }
 
         [HttpPost]
@@ -138,7 +118,7 @@ namespace ObsWebUI.Controllers
                 }
                 catch (Exception ex)
                 {
-                   
+
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -188,7 +168,6 @@ namespace ObsWebUI.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
 
     }
 }

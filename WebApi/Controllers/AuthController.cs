@@ -1,53 +1,61 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Business.AuthorizationServices.Abstract;
-using Business.AuthorizationServices.Concrete;
-using Business.CommonServices.ICommonUserInterfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Business.CommonServices.ICommonUserInterfaces;
+using Entities.CommonEntities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
+using WebAPI.Utils;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
-namespace WebApi.Controllers
+namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController(IConfiguration configuration, IUserService userService) : ControllerBase
+    public class AuthController : ControllerBase
     {
+        private readonly IUserService _userService;
+        private IConfiguration _configuration;
+
+        public AuthController(IUserService userService, IConfiguration configuration)
+        {
+            _userService = userService;
+            _configuration = configuration;
+        }
 
         [HttpPost("Login")]
-        public ActionResult Login([FromBody] UserInfo user)
+        public async Task<IActionResult> Login([FromBody] UserRequestModel userRequestModel)
         {
-            var result = userService.GetUserByEmailAndPassword(user.Email, user.Password);
+            var user = _userService.GetUserByEmailAndPassword(userRequestModel.Email, userRequestModel.Password);
 
-            if (result != null)
+            if (user != null)
             {
-                var token = GetJwtToken(user.Email, user.Password);
+                var userResponseModel = GetJwtToken(user);
 
-                return Ok(token);
+                return await Task.FromResult<IActionResult>(Ok(userResponseModel));
+            }
+            else
+            {
+                return await Task.FromResult<IActionResult>(Unauthorized("Yetkisiz erişim"));
             }
 
-            return Ok("fail");
+
         }
 
 
-        private string GetJwtToken(string email, string password)
+        private UserResponseModel GetJwtToken(User user)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["Jwt:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]));
 
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new List<Claim>
+            var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.Sub,email),
-
+                new Claim(JwtRegisteredClaimNames.Sub,user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
             };
 
-            var user = userService.GetUserByEmailAndPassword(email, password);
-
-            var roles = userService.GetUserOperationClaims(user.Id);
+            var roles = _userService.GetUserOperationClaims(user.Id);
 
             foreach (var role in roles)
             {
@@ -55,22 +63,23 @@ namespace WebApi.Controllers
             }
 
             var token = new JwtSecurityToken(
-                issuer: configuration["Jwt:Issuer"],
-                audience: configuration["Jwt:Audience"],
-                claims:claims,
-                expires:DateTime.Now.AddMinutes(Convert.ToDouble(configuration["Jwt:Expires"])),
-                signingCredentials:credentials
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:Expires"])),
+                signingCredentials: credentials
+                );
 
-            );
+            var generatedToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new UserResponseModel
+            {
+                Roles = roles.Select(p => p.Name).ToList(),
+                Email = user.Email,
+                Token = generatedToken
+
+            };
+
         }
-    }
-
-
-    public class UserInfo
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
     }
 }
